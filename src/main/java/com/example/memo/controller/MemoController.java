@@ -48,6 +48,21 @@ public class MemoController {
         // responseList = memoList.values().stream().map(MemoResponseDto::new).toList();
         return responseList;
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MemoResponseDto> findMemoById(@PathVariable Long id) {
+
+        // 식별자의 Memo가 없다면?
+        Memo memo = memoList.get(id);
+
+        // NPE 방지
+        if (memo == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(new MemoResponseDto(memo), HttpStatus.OK);
+    }
+
     @PutMapping("/{id}")
     public MemoResponseDto updateMemoById(
             @PathVariable Long id,
