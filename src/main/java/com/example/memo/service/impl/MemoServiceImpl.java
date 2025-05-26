@@ -96,15 +96,12 @@ public class MemoServiceImpl implements MemoService {
 
     @Override
     public void deleteMemo(Long id) {
-        // memo 조회
-        Memo memo = memoRepository.findMemoById(id);
-
-        // NPE 방지
-        if (memo == null) {
+        // memo 삭제
+        int deletedRow = memoRepository.deleteMemo(id);
+        // 삭제된 row가 0개 라면
+        if (deletedRow == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
         }
-
-        memoRepository.deleteMemo(id);
 
     }
 }

@@ -94,7 +94,8 @@ public class JdbcTemplateMemoRepository implements MemoRepository {
     }
 
     @Override
-    public void deleteMemo(Long id) {
-
+    public int deleteMemo(Long id) {
+        // 쿼리의 영향을 받은 row 수를 int로 반환한다.
+        return jdbcTemplate.update("delete from memo where id = ?", id);
     }
 }
