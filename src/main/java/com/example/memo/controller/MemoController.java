@@ -37,15 +37,7 @@ public class MemoController {
     @GetMapping("/{id}")
     public ResponseEntity<MemoResponseDto> findMemoById(@PathVariable Long id) {
 
-        // 식별자의 Memo가 없다면?
-        Memo memo = memoList.get(id);
-
-        // NPE 방지
-        if (memo == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(new MemoResponseDto(memo), HttpStatus.OK);
+        return new ResponseEntity<>(memoService.findMemoById(id), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

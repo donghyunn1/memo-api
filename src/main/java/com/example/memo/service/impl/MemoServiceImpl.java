@@ -5,7 +5,9 @@ import com.example.memo.dto.MemoResponseDto;
 import com.example.memo.entity.Memo;
 import com.example.memo.repository.MemoRepository;
 import com.example.memo.service.MemoService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -37,5 +39,18 @@ public class MemoServiceImpl implements MemoService {
         List<MemoResponseDto> allMemos = memoRepository.findAllMemos();
 
         return allMemos;
+    }
+
+    @Override
+    public MemoResponseDto findMemoById(Long id) {
+        // 식별자의 Memo가 없다면?
+        Memo memo = memoRepository.findMemoById(id);
+
+        // NPE 방지
+        if (memo == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
+        }
+
+        return new MemoResponseDto(memo);
     }
 }
