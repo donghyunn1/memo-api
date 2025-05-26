@@ -3,6 +3,7 @@ package com.example.memo.controller;
 import com.example.memo.dto.MemoRequestDto;
 import com.example.memo.dto.MemoResponseDto;
 import com.example.memo.entity.Memo;
+import com.example.memo.service.MemoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,22 +14,17 @@ import java.util.*;
 @RequestMapping("/memos") // prefix
 public class MemoController {
 
-    // 자료구조가 DB 역할 수행
-    private final Map<Long, Memo> memoList = new HashMap<>();
+    // 주입된 의존성을 변경할 수 없어 객체의 상태를 안전하게 유지할 수 있다.
+    private final MemoService memoService;
 
-    @PostMapping
+    public MemoController(MemoService memoService) {
+        this.memoService = memoService;
+    }
+
+    @PostMapping // 요청
     public ResponseEntity<MemoResponseDto> createMemo(@RequestBody MemoRequestDto requestDto) {
-
-        // MemoId 식별자 계산
-        Long memoId = memoList.isEmpty() ? 1 : Collections.max(memoList.keySet()) + 1;
-
-        // 요청받은 데이터로 Memo 객체 생성
-        Memo memo = new Memo(memoId, requestDto.getTitle(), requestDto.getContents());
-
-        // Inmemory DB에 Memo 저장
-        memoList.put(memoId, memo);
-
-        return new ResponseEntity<>(new MemoResponseDto(memo), HttpStatus.CREATED);
+        // ServiceLayer 호출 및 응답
+        return new ResponseEntity<>(memoService.saveMemo(requestDto), HttpStatus.CREATED);
     }
 
 
