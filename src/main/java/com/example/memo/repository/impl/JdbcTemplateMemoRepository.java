@@ -3,11 +3,13 @@ package com.example.memo.repository.impl;
 import com.example.memo.dto.MemoResponseDto;
 import com.example.memo.entity.Memo;
 import com.example.memo.repository.MemoRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -97,5 +99,12 @@ public class JdbcTemplateMemoRepository implements MemoRepository {
     public int deleteMemo(Long id) {
         // 쿼리의 영향을 받은 row 수를 int로 반환한다.
         return jdbcTemplate.update("delete from memo where id = ?", id);
+    }
+
+    @Override
+    public Memo findMemoByIdOrElseThrow(Long id) {
+        List<Memo> result = jdbcTemplate.query("select * from memo where id = ?", memoRowMapperV2(), id);
+
+        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
     }
 }
