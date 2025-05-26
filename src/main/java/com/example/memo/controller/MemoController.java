@@ -31,18 +31,7 @@ public class MemoController {
     @GetMapping
     public List<MemoResponseDto> findAllMemos() {
 
-        // init List
-        List<MemoResponseDto> responseList = new ArrayList<>();
-
-        // HashMap<Memo> -> List<MemoResponseDto>
-        for (Memo memo : memoList.values()) {
-            MemoResponseDto responseDto = new MemoResponseDto(memo);
-            responseList.add(responseDto);
-        }
-
-        // Map To List
-        // responseList = memoList.values().stream().map(MemoResponseDto::new).toList();
-        return responseList;
+        return memoService.findAllMemos();
     }
 
     @GetMapping("/{id}")

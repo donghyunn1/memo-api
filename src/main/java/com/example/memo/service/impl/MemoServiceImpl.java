@@ -7,6 +7,8 @@ import com.example.memo.repository.MemoRepository;
 import com.example.memo.service.MemoService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MemoServiceImpl implements MemoService {
 
@@ -26,5 +28,14 @@ public class MemoServiceImpl implements MemoService {
         Memo savedMemo = memoRepository.saveMemo(memo);
 
         return new MemoResponseDto(savedMemo);
+    }
+
+    @Override
+    public List<MemoResponseDto> findAllMemos() {
+
+        // 전체 조회
+        List<MemoResponseDto> allMemos = memoRepository.findAllMemos();
+
+        return allMemos;
     }
 }
