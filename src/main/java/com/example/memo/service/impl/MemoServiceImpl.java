@@ -7,6 +7,7 @@ import com.example.memo.repository.MemoRepository;
 import com.example.memo.service.MemoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -53,15 +54,9 @@ public class MemoServiceImpl implements MemoService {
         return new MemoResponseDto(optionalMemo.get());
     }
 
+    @Transactional
     @Override
     public MemoResponseDto updateMemo(Long id, String title, String contents) {
-        // memo 조회
-        Memo memo = memoRepository.findMemoById(id);
-
-        // NPE 방지
-        if (memo == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
-        }
 
         // 필수값 검증
         if (title == null || contents == null) {
@@ -69,9 +64,14 @@ public class MemoServiceImpl implements MemoService {
         }
 
         // memo 수정
-        memo.update(title, contents);
+        int updatedRow = memoRepository.updateMemo(id, title, contents);
+        // 수정된 row가 0개라면
+        if (updatedRow == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No data has been modified.");
+        }
 
-        return new MemoResponseDto(memo);
+        // 수정된 메모 조회
+        return new MemoResponseDto(memoRepository.findMemoById(id).get());
     }
 
     @Override

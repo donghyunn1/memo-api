@@ -83,6 +83,12 @@ public class JdbcTemplateMemoRepository implements MemoRepository {
     }
 
     @Override
+    public int updateMemo(Long id, String title, String contents) {
+        // 쿼리의 영향을 받은 row 수를 int로 반환한다.
+        return jdbcTemplate.update("update memo set title = ?, contents = ? where id = ?", title, contents, id);
+    }
+
+    @Override
     public void deleteMemo(Long id) {
 
     }
