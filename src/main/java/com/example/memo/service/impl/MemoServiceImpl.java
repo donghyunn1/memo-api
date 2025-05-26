@@ -23,13 +23,11 @@ public class MemoServiceImpl implements MemoService {
     @Override
     public MemoResponseDto saveMemo(MemoRequestDto requestDto) {
 
-        // 요청받은 데이터로 Memo 객체 생성 ID 없음
+        // 요청받은 데이터로 Memo 객체 생성
         Memo memo = new Memo(requestDto.getTitle(), requestDto.getContents());
 
-        // Inmemory DB에 Memo 저장
-        Memo savedMemo = memoRepository.saveMemo(memo);
-
-        return new MemoResponseDto(savedMemo);
+        // 저장
+        return memoRepository.saveMemo(memo);
     }
 
     @Override
