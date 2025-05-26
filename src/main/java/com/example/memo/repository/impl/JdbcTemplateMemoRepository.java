@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class JdbcTemplateMemoRepository implements MemoRepository {
@@ -61,8 +62,24 @@ public class JdbcTemplateMemoRepository implements MemoRepository {
     }
 
     @Override
-    public Memo findMemoById(Long id) {
-        return null;
+    public Optional<Memo> findMemoById(Long id) {
+        List<Memo> result = jdbcTemplate.query("select * from memo where id = ?", memoRowMapperV2(), id);
+
+        return result.stream().findAny();
+    }
+
+    private RowMapper<Memo> memoRowMapperV2() {
+        return new RowMapper<Memo>() {
+            @Override
+            public Memo mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Memo(
+                        rs.getLong("id"),
+                        rs.getString("title"),
+                        rs.getString("contents")
+                );
+            }
+
+        };
     }
 
     @Override

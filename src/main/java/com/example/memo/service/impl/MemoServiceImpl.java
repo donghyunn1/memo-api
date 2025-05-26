@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MemoServiceImpl implements MemoService {
@@ -42,14 +43,14 @@ public class MemoServiceImpl implements MemoService {
     @Override
     public MemoResponseDto findMemoById(Long id) {
         // 식별자의 Memo가 없다면?
-        Memo memo = memoRepository.findMemoById(id);
+        Optional<Memo> optionalMemo = memoRepository.findMemoById(id);
 
         // NPE 방지
-        if (memo == null) {
+        if (optionalMemo.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
         }
 
-        return new MemoResponseDto(memo);
+        return new MemoResponseDto(optionalMemo.get());
     }
 
     @Override
